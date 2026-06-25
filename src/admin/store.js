@@ -1,5 +1,7 @@
 import { get_runtime } from '../util.js'
 import { validateCookie as validateCookieOnline } from './cookie-validator.js'
+import exampleDefaults from '../example.js'
+import QRCode from 'qrcode'
 
 const runtime = get_runtime()
 
@@ -565,7 +567,7 @@ class DataStore {
         }
     }
 
-    setup2FA(username) {
+    async setup2FA(username) {
         const user = this.users.get(username)
         if (!user) {
             return { success: false, error: '用户不存在' }
@@ -576,15 +578,24 @@ class DataStore {
         user.twoFactorTempSecret = secret
         this.users.set(username, user)
 
-        const issuer = 'Meting-API'
+        const issuer = 'Meting API'
         const accountName = username
         const otpAuthUrl = `otpauth://totp/${encodeURIComponent(issuer)}:${encodeURIComponent(accountName)}?secret=${secret}&issuer=${encodeURIComponent(issuer)}&algorithm=SHA1&digits=6&period=30`
+
+        let qrCode = ''
+        try {
+            const svg = await QRCode.toString(otpAuthUrl, { type: 'svg', margin: 1, width: 200 })
+            qrCode = 'data:image/svg+xml;base64,' + Buffer.from(svg).toString('base64')
+        } catch (e) {
+            qrCode = ''
+        }
 
         return {
             success: true,
             data: {
                 secret,
-                otpAuthUrl
+                otpAuthUrl,
+                qrCode
             }
         }
     }
@@ -800,6 +811,196 @@ class DataStore {
             monitorEnabled: this.config.monitorEnabled || false,
             monitorInterval: this.config.monitorInterval || 60
         }
+    }
+
+    getDomainControlConfig() {
+        return {
+            enabled: this.config.domainControlEnabled || false,
+            allowedDomains: Array.isArray(this.config.allowedDomains)
+                ? this.config.allowedDomains
+                : [],
+            allowMissingReferer: this.config.allowMissingReferer !== false
+        }
+    }
+
+    async setDomainControlConfig(data, operator = 'system') {
+        if (!data || typeof data !== 'object') {
+            return { success: false, error: '无效的配置' }
+        }
+
+        if (data.enabled !== undefined) {
+            this.config.domainControlEnabled = !!data.enabled
+        }
+
+        if (data.allowedDomains !== undefined) {
+            let domains = data.allowedDomains
+            if (typeof domains === 'string') {
+                try {
+                    domains = JSON.parse(domains)
+                } catch {
+                    return { success: false, error: 'allowedDomains JSON 格式无效' }
+                }
+            }
+            if (!Array.isArray(domains)) {
+                return { success: false, error: 'allowedDomains 必须为数组' }
+            }
+            const sanitized = domains
+                .map((d) => String(d || '').trim().toLowerCase())
+                .filter((d) => d.length > 0)
+                .filter((d, i, arr) => arr.indexOf(d) === i)
+            this.config.allowedDomains = sanitized
+        }
+
+        if (data.allowMissingReferer !== undefined) {
+            this.config.allowMissingReferer = !!data.allowMissingReferer
+        }
+
+        await this.addLog('config_update', `更新调用方域名控制配置`, operator)
+        await this.saveToFile()
+
+        return { success: true, data: this.getDomainControlConfig() }
+    }
+
+    // ===== 测试曲库管理 =====
+    static ALLOWED_TEST_TYPES = ['playlist', 'song', 'artist', 'search', 'lrc', 'pic', 'url']
+    static ALLOWED_TEST_PLATFORMS = ['netease', 'tencent']
+
+    seedTestLibrary() {
+        const typeNames = {
+            playlist: '歌单', song: '单曲', artist: '歌手',
+            search: '搜索', lrc: '歌词', pic: '封面', url: '链接'
+        }
+        const items = []
+        for (const platform of Object.keys(exampleDefaults)) {
+            const types = exampleDefaults[platform]
+            for (const type of Object.keys(types)) {
+                const entry = types[type]
+                if (!entry || !entry.value) continue
+                items.push({
+                    id: this.generateTestId(),
+                    platform,
+                    type,
+                    value: String(entry.value),
+                    name: typeNames[type] || type,
+                    show: entry.show !== false
+                })
+            }
+        }
+        return items
+    }
+
+    generateTestId() {
+        return 'tl_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 8)
+    }
+
+    getTestLibrary() {
+        if (!Array.isArray(this.config.testLibrary) || this.config.testLibrary.length === 0) {
+            this.config.testLibrary = this.seedTestLibrary()
+        }
+        return { items: this.config.testLibrary.map((i) => ({ ...i })) }
+    }
+
+    async addTestItem(item, operator = 'system') {
+        const validation = this.validateTestItem(item)
+        if (!validation.valid) return { success: false, error: validation.error }
+
+        if (!Array.isArray(this.config.testLibrary)) this.config.testLibrary = []
+        const newItem = {
+            id: this.generateTestId(),
+            platform: item.platform,
+            type: item.type,
+            value: String(item.value).trim(),
+            name: (item.name || '').trim() || validation.typeName,
+            show: item.show !== false
+        }
+        this.config.testLibrary.push(newItem)
+        await this.addLog('config_update', `新增测试曲库条目: ${newItem.name} (${newItem.platform}/${newItem.type}/${newItem.value})`, operator)
+        await this.saveToFile()
+        return { success: true, data: { ...newItem } }
+    }
+
+    async updateTestItem(id, patch, operator = 'system') {
+        if (!Array.isArray(this.config.testLibrary)) return { success: false, error: '条目不存在' }
+        const idx = this.config.testLibrary.findIndex((i) => i.id === id)
+        if (idx === -1) return { success: false, error: '条目不存在' }
+
+        const merged = { ...this.config.testLibrary[idx], ...patch }
+        const validation = this.validateTestItem(merged)
+        if (!validation.valid) return { success: false, error: validation.error }
+
+        this.config.testLibrary[idx] = {
+            ...this.config.testLibrary[idx],
+            platform: merged.platform,
+            type: merged.type,
+            value: String(merged.value).trim(),
+            name: (merged.name || '').trim() || validation.typeName,
+            show: merged.show !== false
+        }
+        await this.addLog('config_update', `更新测试曲库条目: ${this.config.testLibrary[idx].name}`, operator)
+        await this.saveToFile()
+        return { success: true, data: { ...this.config.testLibrary[idx] } }
+    }
+
+    async deleteTestItem(id, operator = 'system') {
+        if (!Array.isArray(this.config.testLibrary)) return { success: false, error: '条目不存在' }
+        const idx = this.config.testLibrary.findIndex((i) => i.id === id)
+        if (idx === -1) return { success: false, error: '条目不存在' }
+        const removed = this.config.testLibrary.splice(idx, 1)[0]
+        await this.addLog('config_update', `删除测试曲库条目: ${removed.name}`, operator)
+        await this.saveToFile()
+        return { success: true }
+    }
+
+    validateTestItem(item) {
+        const typeNames = {
+            playlist: '歌单', song: '单曲', artist: '歌手',
+            search: '搜索', lrc: '歌词', pic: '封面', url: '链接'
+        }
+        if (!item) return { valid: false, error: '无效的条目' }
+        if (!DataStore.ALLOWED_TEST_PLATFORMS.includes(item.platform)) {
+            return { valid: false, error: '平台不合法' }
+        }
+        if (!DataStore.ALLOWED_TEST_TYPES.includes(item.type)) {
+            return { valid: false, error: '类型不合法' }
+        }
+        if (!item.value || !String(item.value).trim()) {
+            return { valid: false, error: '资源ID不能为空' }
+        }
+        return { valid: true, typeName: typeNames[item.type] || item.type }
+    }
+
+    // ===== /api 默认参数配置 =====
+    getApiDefaults() {
+        const d = this.config.apiDefaults || {}
+        return {
+            server: d.server || 'tencent',
+            type: d.type || 'playlist',
+            id: d.id || '7326220405'
+        }
+    }
+
+    async setApiDefaults(data, operator = 'system') {
+        if (!data || typeof data !== 'object') {
+            return { success: false, error: '无效的配置' }
+        }
+        const server = (data.server || '').trim()
+        const type = (data.type || '').trim()
+        const id = (data.id || '').trim()
+
+        if (!DataStore.ALLOWED_TEST_PLATFORMS.includes(server)) {
+            return { success: false, error: '平台不合法' }
+        }
+        if (!DataStore.ALLOWED_TEST_TYPES.includes(type)) {
+            return { success: false, error: '类型不合法' }
+        }
+        if (!id) {
+            return { success: false, error: '资源ID不能为空' }
+        }
+
+        this.config.apiDefaults = { server, type, id }
+        await this.addLog('config_update', `更新 /api 默认参数: ${server}/${type}/${id}`, operator)
+        await this.saveToFile()
+        return { success: true, data: this.getApiDefaults() }
     }
 
     getWebhookConfig() {

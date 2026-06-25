@@ -19,9 +19,10 @@ export default async (ctx) => {
     const p = new Providers()
 
     const query = ctx.req.query()
-    const server = query.server || 'tencent'
-    const type = query.type || 'playlist'
-    const id = query.id || '7326220405'
+    const defaults = store.getApiDefaults()
+    const server = query.server || defaults.server
+    const type = query.type || defaults.type
+    const id = query.id || defaults.id
 
     if (!p.get_provider_list().includes(server) || !p.get(server).support_type.includes(type)) {
         ctx.status(400)

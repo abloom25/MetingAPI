@@ -1,6 +1,8 @@
-# Meting-API
+# Meting API
 
 多平台音乐 API 服务，支持网易云音乐和 QQ 音乐，提供完整的 Cookie 管理、VIP 歌曲播放、自动续期和监测通知功能。
+
+> 原项目：[mikus-loli/Meting-API](https://github.com/mikus-loli/Meting-API)，本项目在其基础上二次开发。
 
 ## 功能特性
 
@@ -21,8 +23,8 @@
 |------|------|:---:|:---:|
 | `song` | 单曲信息 | ✅ | ✅ |
 | `playlist` | 歌单 | ✅ | ✅ |
-| `artist` | 歌手歌曲 | ✅ | ❌ |
-| `search` | 搜索 | ✅ | ❌ |
+| `artist` | 歌手歌曲 | ✅ | ✅ |
+| `search` | 搜索 | ✅ | ✅ |
 | `url` | 播放链接 | ✅ | ✅ |
 | `lrc` | 歌词 | ✅ | ✅ |
 | `pic` | 封面图片 | ✅ | ✅ |

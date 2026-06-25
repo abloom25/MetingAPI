@@ -3,44 +3,53 @@ const getAdminHtml = () => `<!DOCTYPE html>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Meting-API 管理后台</title>
+    <title>Meting API 管理后台</title>
     <style>
         :root {
-            --primary: #6366f1;
-            --primary-light: #818cf8;
-            --primary-dark: #4f46e5;
-            --primary-bg: rgba(99,102,241,0.07);
-            --primary-border: rgba(99,102,241,0.2);
-            --success: #10b981;
-            --success-bg: rgba(16,185,129,0.07);
-            --warning: #f59e0b;
-            --warning-bg: rgba(245,158,11,0.07);
-            --danger: #ef4444;
-            --danger-bg: rgba(239,68,68,0.07);
-            --info: #3b82f6;
-            --info-bg: rgba(59,130,246,0.07);
-            --bg: #f1f5f9;
-            --bg-card: #ffffff;
-            --bg-sidebar: #0f172a;
-            --bg-sidebar-hover: rgba(255,255,255,0.06);
-            --bg-sidebar-active: rgba(99,102,241,0.15);
-            --text: #1e293b;
-            --text-secondary: #64748b;
-            --text-muted: #94a3b8;
-            --text-sidebar: #94a3b8;
-            --text-sidebar-active: #ffffff;
-            --border: #e2e8f0;
-            --border-light: #f1f5f9;
-            --shadow-xs: 0 1px 2px rgba(0,0,0,0.03);
-            --shadow-sm: 0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.03);
-            --shadow: 0 2px 8px rgba(0,0,0,0.06);
-            --shadow-md: 0 4px 12px rgba(0,0,0,0.07);
-            --shadow-lg: 0 12px 24px rgba(0,0,0,0.1);
-            --radius: 10px;
-            --radius-sm: 6px;
-            --radius-lg: 14px;
-            --transition: 0.2s cubic-bezier(0.4,0,0.2,1);
-            --transition-slow: 0.35s cubic-bezier(0.4,0,0.2,1);
+            --accent: #81d8d0;
+            --accent-soft: #a7e7e2;
+            --accent-rgb: 129, 216, 208;
+            --primary: #81d8d0;
+            --primary-light: #a7e7e2;
+            --primary-dark: #5fb8b0;
+            --primary-bg: rgba(129, 216, 208, 0.12);
+            --primary-border: rgba(129, 216, 208, 0.3);
+            --success: #81d8d0;
+            --success-bg: rgba(129, 216, 208, 0.12);
+            --warning: #ffb454;
+            --warning-bg: rgba(255, 180, 84, 0.12);
+            --danger: #ff6363;
+            --danger-bg: rgba(255, 99, 99, 0.12);
+            --info: #5AC8FA;
+            --info-bg: rgba(90, 200, 250, 0.12);
+            --bg: #0e0d12;
+            --bg-card: rgba(255, 255, 255, 0.075);
+            --bg-solid: rgba(20, 19, 26, 0.96);
+            --bg-sidebar: rgba(14, 13, 18, 0.6);
+            --bg-sidebar-hover: rgba(255, 255, 255, 0.06);
+            --bg-sidebar-active: rgba(129, 216, 208, 0.14);
+            --text: rgba(255, 255, 255, 0.92);
+            --text-secondary: rgba(255, 255, 255, 0.68);
+            --text-muted: rgba(255, 255, 255, 0.43);
+            --text-sidebar: rgba(255, 255, 255, 0.68);
+            --text-sidebar-active: #a7e7e2;
+            --border: rgba(255, 255, 255, 0.11);
+            --border-light: rgba(255, 255, 255, 0.06);
+            --separator: rgba(255, 255, 255, 0.1);
+            --glass-border: rgba(255, 255, 255, 0.11);
+            --glass-border-strong: rgba(255, 255, 255, 0.14);
+            --field-bg: rgba(0, 0, 0, 0.25);
+            --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.2);
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.25);
+            --shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+            --shadow-md: 0 12px 32px rgba(0, 0, 0, 0.35);
+            --shadow-lg: 0 24px 60px rgba(0, 0, 0, 0.45);
+            --radius: 18px;
+            --radius-sm: 14px;
+            --radius-lg: 22px;
+            --transition: 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+            --transition-slow: 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+            --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -48,27 +57,32 @@ const getAdminHtml = () => `<!DOCTYPE html>
         html { scroll-behavior: smooth; }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
-            background: var(--bg);
+            font-family: Inter, -apple-system, BlinkMacSystemFont, "SF Pro SC", "PingFang SC", "Segoe UI", "Microsoft YaHei", system-ui, sans-serif;
+            background:
+                radial-gradient(circle at 18% 12%, rgba(var(--accent-rgb), 0.14), transparent 42%),
+                radial-gradient(circle at 82% 80%, rgba(var(--accent-rgb), 0.06), transparent 46%),
+                var(--bg);
             min-height: 100vh;
             color: var(--text);
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
+            letter-spacing: -0.01em;
         }
 
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
         ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
-        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.14); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.24); }
 
         .login-container {
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
-            background-size: 200% 200%;
-            animation: gradientShift 8s ease infinite;
+            background:
+                radial-gradient(circle at 20% 15%, rgba(var(--accent-rgb), 0.22), transparent 42%),
+                radial-gradient(circle at 80% 85%, rgba(var(--accent-rgb), 0.1), transparent 46%),
+                var(--bg);
             padding: 20px;
             position: relative;
             overflow: hidden;
@@ -78,30 +92,34 @@ const getAdminHtml = () => `<!DOCTYPE html>
             position: absolute;
             width: 500px;
             height: 500px;
-            background: rgba(255,255,255,0.08);
+            background: rgba(var(--accent-rgb), 0.08);
             border-radius: 50%;
             top: -150px;
             right: -100px;
             animation: float 6s ease-in-out infinite;
+            filter: blur(40px);
         }
         .login-container::after {
             content: '';
             position: absolute;
             width: 300px;
             height: 300px;
-            background: rgba(255,255,255,0.05);
+            background: rgba(var(--accent-rgb), 0.06);
             border-radius: 50%;
             bottom: -80px;
             left: -60px;
             animation: float 8s ease-in-out infinite reverse;
+            filter: blur(40px);
         }
 
         .login-box {
-            background: rgba(255,255,255,0.95);
-            backdrop-filter: blur(20px);
+            background: var(--bg-card);
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(22px) saturate(180%);
+            -webkit-backdrop-filter: blur(22px) saturate(180%);
             padding: 48px 40px;
             border-radius: var(--radius-lg);
-            box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+            box-shadow: 0 24px 60px rgba(0,0,0,0.4);
             width: 100%;
             max-width: 420px;
             animation: fadeUp 0.6s cubic-bezier(0.16,1,0.3,1);
@@ -113,8 +131,8 @@ const getAdminHtml = () => `<!DOCTYPE html>
             margin-bottom: 6px;
             color: var(--text);
             font-size: 26px;
-            font-weight: 800;
-            letter-spacing: -0.5px;
+            font-weight: 700;
+            letter-spacing: -0.02em;
         }
         .login-box .login-subtitle {
             text-align: center;
@@ -137,23 +155,23 @@ const getAdminHtml = () => `<!DOCTYPE html>
         .form-group textarea {
             width: 100%;
             padding: 10px 14px;
-            border: 1.5px solid var(--border);
+            border: 1px solid var(--glass-border-strong);
             border-radius: var(--radius-sm);
             font-size: 14px;
             color: var(--text);
-            background: var(--bg-card);
-            transition: var(--transition);
+            background: var(--field-bg);
+            transition: border-color var(--transition);
             font-family: inherit;
         }
         .form-group input:focus,
         .form-group select:focus,
         .form-group textarea:focus {
             outline: none;
-            border-color: var(--primary);
+            border-color: var(--accent);
             box-shadow: 0 0 0 3px var(--primary-bg);
         }
         .form-group input:disabled {
-            background: #f1f5f9;
+            background: rgba(255,255,255,0.04);
             color: var(--text-muted);
             cursor: not-allowed;
         }
@@ -162,7 +180,7 @@ const getAdminHtml = () => `<!DOCTYPE html>
         .form-group small { color: var(--text-muted); display: block; margin-top: 4px; font-size: 12px; }
         .form-group select {
             appearance: none;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2364748b' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%238a8a8a' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
             background-repeat: no-repeat;
             background-position: right 12px center;
             padding-right: 36px;
@@ -187,17 +205,17 @@ const getAdminHtml = () => `<!DOCTYPE html>
             overflow: hidden;
         }
         .btn:active { transform: scale(0.97); }
-        .btn-primary { background: var(--primary); color: white; }
-        .btn-primary:hover { background: var(--primary-dark); box-shadow: 0 4px 12px rgba(99,102,241,0.35); }
-        .btn-danger { background: var(--danger); color: white; }
-        .btn-danger:hover { background: #dc2626; box-shadow: 0 4px 12px rgba(239,68,68,0.35); }
-        .btn-default { background: var(--bg-card); border: 1.5px solid var(--border); color: var(--text); }
-        .btn-default:hover { border-color: var(--primary); color: var(--primary); background: var(--primary-bg); }
-        .btn-success { background: var(--success); color: white; }
-        .btn-success:hover { background: #059669; box-shadow: 0 4px 12px rgba(16,185,129,0.35); }
-        .btn-warning { background: var(--warning); color: white; }
-        .btn-warning:hover { background: #d97706; box-shadow: 0 4px 12px rgba(245,158,11,0.35); }
-        .btn-sm { padding: 6px 12px; font-size: 12px; border-radius: 5px; }
+        .btn-primary { background: var(--accent); color: #0e0d12; }
+        .btn-primary:hover { filter: brightness(1.1); box-shadow: 0 4px 14px rgba(var(--accent-rgb), 0.35); }
+        .btn-danger { background: rgba(255, 99, 99, 0.85); color: #fff; }
+        .btn-danger:hover { background: rgba(255, 99, 99, 1); box-shadow: 0 4px 12px rgba(255,99,99,0.3); }
+        .btn-default { background: transparent; border: 1px solid var(--glass-border-strong); color: var(--text); }
+        .btn-default:hover { background: rgba(255,255,255,0.06); border-color: var(--accent); color: var(--accent); }
+        .btn-success { background: var(--accent); color: #0e0d12; }
+        .btn-success:hover { filter: brightness(1.1); box-shadow: 0 4px 14px rgba(var(--accent-rgb), 0.35); }
+        .btn-warning { background: var(--warning); color: #1a1a1a; }
+        .btn-warning:hover { filter: brightness(1.08); box-shadow: 0 4px 12px rgba(255,180,84,0.3); }
+        .btn-sm { padding: 6px 12px; font-size: 12px; border-radius: 9px; }
         .btn-lg { padding: 12px 28px; font-size: 15px; }
         .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
         .btn-full { width: 100%; }
@@ -213,24 +231,27 @@ const getAdminHtml = () => `<!DOCTYPE html>
             width: 230px;
             height: 100vh;
             background: var(--bg-sidebar);
+            backdrop-filter: saturate(180%) blur(20px);
+            -webkit-backdrop-filter: saturate(180%) blur(20px);
             color: var(--text-sidebar);
             z-index: 100;
             display: flex;
             flex-direction: column;
             transition: width var(--transition-slow);
+            border-right: 1px solid var(--border);
         }
         .sidebar-brand {
             padding: 24px 20px 20px;
-            border-bottom: 1px solid rgba(255,255,255,0.06);
+            border-bottom: 1px solid var(--border);
         }
         .sidebar-brand h2 {
             font-size: 18px;
-            font-weight: 800;
-            color: #fff;
+            font-weight: 700;
+            color: var(--text);
             display: flex;
             align-items: center;
             gap: 10px;
-            letter-spacing: -0.3px;
+            letter-spacing: -0.02em;
         }
         .sidebar-brand .brand-sub {
             font-size: 11px;
@@ -248,7 +269,7 @@ const getAdminHtml = () => `<!DOCTYPE html>
         .sidebar-menu li {
             padding: 10px 14px;
             cursor: pointer;
-            border-radius: 8px;
+            border-radius: 980px;
             transition: var(--transition);
             font-size: 14px;
             color: var(--text-sidebar);
@@ -257,26 +278,16 @@ const getAdminHtml = () => `<!DOCTYPE html>
             align-items: center;
             gap: 10px;
             position: relative;
+            font-weight: 500;
         }
         .sidebar-menu li:hover {
             background: var(--bg-sidebar-hover);
-            color: #e2e8f0;
+            color: var(--text);
         }
         .sidebar-menu li.active {
             background: var(--bg-sidebar-active);
             color: var(--text-sidebar-active);
             font-weight: 600;
-        }
-        .sidebar-menu li.active::before {
-            content: '';
-            position: absolute;
-            left: -10px;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 3px;
-            height: 20px;
-            background: var(--primary-light);
-            border-radius: 0 3px 3px 0;
         }
         .sidebar-menu li .menu-icon { font-size: 16px; width: 22px; text-align: center; flex-shrink: 0; }
         .sidebar-menu li .menu-text { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -287,7 +298,9 @@ const getAdminHtml = () => `<!DOCTYPE html>
             transition: margin-left var(--transition-slow);
         }
         .header {
-            background: var(--bg-card);
+            background: rgba(14, 13, 18, 0.7);
+            backdrop-filter: saturate(180%) blur(20px);
+            -webkit-backdrop-filter: saturate(180%) blur(20px);
             padding: 16px 0;
             border-bottom: 1px solid var(--border);
             position: sticky;
@@ -295,7 +308,7 @@ const getAdminHtml = () => `<!DOCTYPE html>
             z-index: 50;
         }
         .header-inner { width: 100%; max-width: 1400px; margin: 0 auto; padding: 0 32px; display: flex; justify-content: space-between; align-items: center; }
-        .header h3 { font-size: 18px; font-weight: 700; letter-spacing: -0.3px; }
+        .header h3 { font-size: 22px; font-weight: 700; letter-spacing: -0.02em; }
         .user-info { display: flex; align-items: center; gap: 16px; }
         .user-info .user-name { font-size: 13px; color: var(--text-secondary); font-weight: 500; }
 
@@ -307,12 +320,14 @@ const getAdminHtml = () => `<!DOCTYPE html>
             background: var(--bg-card);
             border-radius: var(--radius);
             box-shadow: var(--shadow-sm);
-            border: 1px solid var(--border);
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(22px) saturate(180%);
+            -webkit-backdrop-filter: blur(22px) saturate(180%);
             padding: 24px;
             margin-bottom: 20px;
-            transition: box-shadow var(--transition), transform var(--transition);
+            transition: box-shadow var(--transition), transform var(--transition), border-color var(--transition);
         }
-        .card:hover { box-shadow: var(--shadow); }
+        .card:hover { box-shadow: var(--shadow); border-color: var(--glass-border-strong); }
         .card-header {
             display: flex;
             justify-content: space-between;
@@ -331,7 +346,9 @@ const getAdminHtml = () => `<!DOCTYPE html>
             background: var(--bg-card);
             border-radius: var(--radius);
             box-shadow: var(--shadow-sm);
-            border: 1px solid var(--border);
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(22px) saturate(180%);
+            -webkit-backdrop-filter: blur(22px) saturate(180%);
             padding: 22px;
             transition: var(--transition-slow);
             position: relative;
@@ -394,7 +411,7 @@ const getAdminHtml = () => `<!DOCTYPE html>
             vertical-align: middle;
         }
         .table tbody tr { transition: var(--transition); }
-        .table tbody tr:nth-child(even) { background: #fafbfc; }
+        .table tbody tr:nth-child(even) { background: rgba(255,255,255,0.03); }
         .table tbody tr:hover { background: var(--primary-bg); }
         .table tbody tr:last-child td { border-bottom: none; }
 
@@ -420,15 +437,19 @@ const getAdminHtml = () => `<!DOCTYPE html>
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(15,23,42,0.4);
-            backdrop-filter: blur(6px);
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
             justify-content: center;
             align-items: center;
             z-index: 1000;
         }
         .modal.show { display: flex; }
         .modal-content {
-            background: var(--bg-card);
+            background: var(--bg-solid);
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(22px) saturate(180%);
+            -webkit-backdrop-filter: blur(22px) saturate(180%);
             padding: 0;
             border-radius: var(--radius-lg);
             width: 100%;
@@ -460,15 +481,15 @@ const getAdminHtml = () => `<!DOCTYPE html>
             justify-content: center;
             transition: var(--transition);
         }
-        .modal-close:hover { background: #f1f5f9; color: var(--text); }
+        .modal-close:hover { background: rgba(255,255,255,0.08); color: var(--text); }
         .modal-body { padding: 24px; }
         .modal-footer {
             display: flex;
             justify-content: flex-end;
             gap: 10px;
             padding: 16px 24px;
-            border-top: 1px solid var(--border);
-            background: var(--border-light);
+            border-top: 1px solid var(--separator);
+            background: rgba(0,0,0,0.18);
             border-radius: 0 0 var(--radius-lg) var(--radius-lg);
         }
 
@@ -493,7 +514,7 @@ const getAdminHtml = () => `<!DOCTYPE html>
             right: 24px;
             padding: 14px 22px;
             border-radius: var(--radius-sm);
-            color: white;
+            color: #0e0d12;
             z-index: 2000;
             animation: slideIn 0.35s cubic-bezier(0.16,1,0.3,1);
             font-size: 13px;
@@ -503,9 +524,10 @@ const getAdminHtml = () => `<!DOCTYPE html>
             align-items: center;
             gap: 8px;
             max-width: 360px;
+            border: 1px solid var(--glass-border);
         }
-        .toast-success { background: var(--success); }
-        .toast-error { background: var(--danger); }
+        .toast-success { background: var(--accent); }
+        .toast-error { background: rgba(255, 99, 99, 0.92); color: #fff; }
 
         .cookie-preview {
             font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
@@ -540,7 +562,7 @@ const getAdminHtml = () => `<!DOCTYPE html>
         }
 
         .skeleton {
-            background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
+            background: linear-gradient(90deg, rgba(255,255,255,0.04) 25%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0.04) 75%);
             background-size: 200% 100%;
             animation: shimmer 1.5s ease-in-out infinite;
             border-radius: var(--radius-sm);
@@ -563,7 +585,7 @@ const getAdminHtml = () => `<!DOCTYPE html>
             display: none;
             margin-top: 16px;
             padding: 16px;
-            background: #f8fafc;
+            background: rgba(0, 0, 0, 0.25);
             border-radius: var(--radius-sm);
             border: 1px solid var(--border);
             text-align: left;
@@ -588,22 +610,52 @@ const getAdminHtml = () => `<!DOCTYPE html>
         .form-row { display: flex; gap: 12px; }
 
         .checkbox-label {
-            display: flex;
+            display: inline-flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
             cursor: pointer;
             font-size: 13px;
             color: var(--text);
             font-weight: 500;
         }
         .checkbox-label input[type="checkbox"] {
-            width: 16px;
-            height: 16px;
-            accent-color: var(--primary);
+            appearance: none;
+            -webkit-appearance: none;
+            position: relative;
+            width: 42px;
+            height: 24px;
+            flex: 0 0 auto;
+            margin: 0;
+            border: none;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.16);
             cursor: pointer;
+            transition: background 0.18s ease;
+        }
+        .checkbox-label input[type="checkbox"]::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 3px;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #fff;
+            transform: translateY(-50%);
+            transition: transform 0.18s ease;
+        }
+        .checkbox-label input[type="checkbox"]:checked {
+            background: color-mix(in srgb, var(--accent) 64%, rgba(255, 255, 255, 0.18));
+        }
+        .checkbox-label input[type="checkbox"]:checked::after {
+            transform: translateY(-50%) translateX(18px);
+        }
+        .checkbox-label input[type="checkbox"]:focus-visible {
+            outline: 2px solid var(--accent);
+            outline-offset: 2px;
         }
 
-        .settings-grid { display: grid; grid-template-columns: 1fr; gap: 24px; max-width: 520px; }
+        .settings-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: 24px; }
         .settings-section h4 {
             font-size: 15px;
             font-weight: 700;
@@ -621,7 +673,7 @@ const getAdminHtml = () => `<!DOCTYPE html>
             margin-bottom: 24px;
         }
         .monitor-status-card {
-            background: #f8fafc;
+            background: rgba(0, 0, 0, 0.25);
             border: 1px solid var(--border);
             border-radius: var(--radius-sm);
             padding: 18px;
@@ -681,7 +733,6 @@ const getAdminHtml = () => `<!DOCTYPE html>
             }
             .sidebar-menu li .menu-icon { font-size: 18px; width: auto; }
             .sidebar-menu li .menu-text { font-size: 10px; white-space: nowrap; }
-            .sidebar-menu li.active::before { display: none; }
             .sidebar-menu li.active {
                 background: var(--bg-sidebar-active);
                 color: var(--primary-light);
@@ -737,7 +788,7 @@ const getAdminHtml = () => `<!DOCTYPE html>
 <body>
     <div class="login-container" id="loginContainer">
         <div class="login-box" id="loginBox">
-            <h1>🎵 Meting-API</h1>
+            <h1>🎵 Meting API</h1>
             <p class="login-subtitle">管理后台登录</p>
             <form id="loginForm">
                 <div class="form-group">
@@ -779,6 +830,9 @@ const getAdminHtml = () => `<!DOCTYPE html>
                 <li data-section="cookies"><span class="menu-icon">🍪</span><span class="menu-text">Cookie管理</span></li>
                 <li data-section="monitor"><span class="menu-icon">🔔</span><span class="menu-text">Cookie监测</span></li>
                 <li data-section="tokens"><span class="menu-icon">🔑</span><span class="menu-text">API Token</span></li>
+                <li data-section="testlib"><span class="menu-icon">🎼</span><span class="menu-text">测试曲库</span></li>
+                <li data-section="domains"><span class="menu-icon">🌐</span><span class="menu-text">域名白名单</span></li>
+                <li data-section="apiDefaults"><span class="menu-icon">⚡</span><span class="menu-text">API默认值</span></li>
                 <li data-section="users"><span class="menu-icon">👥</span><span class="menu-text">用户管理</span></li>
                 <li data-section="logs"><span class="menu-icon">📋</span><span class="menu-text">操作日志</span></li>
                 <li data-section="settings"><span class="menu-icon">⚙️</span><span class="menu-text">设置</span></li>
@@ -990,6 +1044,97 @@ const getAdminHtml = () => `<!DOCTYPE html>
                     </div>
                 </div>
 
+                <div class="content-section" id="testlibSection">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4>🎼 测试曲库管理</h4>
+                            <button class="btn btn-primary" onclick="openTestItemModal()">添加条目</button>
+                        </div>
+                        <p style="color:var(--text-secondary);font-size:13px;margin-bottom:16px;">管理 <code>/test</code> 页面展示的歌曲与歌单。开启「显示」的条目会出现在测试页面。</p>
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>名称</th>
+                                        <th>平台</th>
+                                        <th>类型</th>
+                                        <th>资源ID</th>
+                                        <th>显示</th>
+                                        <th>操作</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="testlibList"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="content-section" id="domainsSection">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4>🌐 域名白名单</h4>
+                            <span id="domainStatusPill" class="badge badge-warning">未启用</span>
+                        </div>
+                        <p style="color:var(--text-secondary);font-size:13px;margin-bottom:16px;">启用后，只有白名单中的域名可以调用 <code>/api</code> 接口。根据请求的 Origin / Referer 头判断调用方。</p>
+                        <form id="domainControlForm">
+                            <div class="form-group">
+                                <label class="checkbox-label"><input type="checkbox" id="domainControlEnabled"> 启用域名白名单</label>
+                                <small>开启后，非白名单域名调用 <code>/api</code> 将返回 403</small>
+                            </div>
+                            <div class="form-group">
+                                <label class="checkbox-label"><input type="checkbox" id="allowMissingReferer" checked> 未携带来源时放行</label>
+                                <small>服务端调用（curl）、直接打开链接等无 Origin/Referer 的情况是否放行。注意：浏览器隐私设置或伪造请求可不发送 Referer，因此白名单主要防止其他网站嵌入盗用。</small>
+                            </div>
+                            <button type="submit" class="btn btn-primary">保存设置</button>
+                        </form>
+                        <div class="card-header" style="margin:8px 0 12px;">
+                            <span class="card-title">已允许的域名</span>
+                            <button class="btn btn-primary btn-sm" onclick="showAddDomainModal()">+ 添加域名</button>
+                        </div>
+                        <div class="table-container">
+                            <table class="table">
+                                <thead><tr><th>域名</th><th style="width:80px;">操作</th></tr></thead>
+                                <tbody id="domainsList"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="content-section" id="apiDefaultsSection">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4>⚡ API 默认值</h4>
+                        </div>
+                        <p style="color:var(--text-secondary);font-size:13px;margin-bottom:16px;">访问 <code>/api</code> 不带参数时返回的默认资源。可用于首页文档示例与无参调用。</p>
+                        <form id="apiDefaultsForm">
+                            <div class="form-group">
+                                <label>默认平台</label>
+                                <select id="apiDefaultServer">
+                                    <option value="netease">网易云音乐</option>
+                                    <option value="tencent">QQ音乐</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>默认类型</label>
+                                <select id="apiDefaultType">
+                                    <option value="playlist">歌单</option>
+                                    <option value="song">单曲</option>
+                                    <option value="artist">歌手</option>
+                                    <option value="search">搜索</option>
+                                    <option value="lrc">歌词</option>
+                                    <option value="pic">封面</option>
+                                    <option value="url">链接</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>默认资源ID</label>
+                                <input type="text" id="apiDefaultId" placeholder="歌单ID / 歌曲ID / 关键词等">
+                            </div>
+                            <button type="submit" class="btn btn-primary">保存</button>
+                        </form>
+                    </div>
+                </div>
+
                 <div class="content-section" id="settingsSection">
                     <div class="settings-grid">
                         <div class="card settings-section">
@@ -1118,6 +1263,54 @@ const getAdminHtml = () => `<!DOCTYPE html>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" onclick="closeModal('cookieModal')">取消</button>
                 <button type="submit" class="btn btn-primary" id="cookieSubmitBtn" onclick="document.getElementById('cookieForm').dispatchEvent(new Event('submit',{cancelable:true}))">保存并验证</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="testItemModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="testItemModalTitle">添加测试条目</h3>
+                <button class="modal-close" onclick="closeModal('testItemModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="testItemForm">
+                    <input type="hidden" id="testItemId">
+                    <div class="form-group">
+                        <label>名称</label>
+                        <input type="text" id="testItemName" placeholder="例如：我的歌单">
+                    </div>
+                    <div class="form-group">
+                        <label>平台</label>
+                        <select id="testItemPlatform" required>
+                            <option value="netease">网易云音乐</option>
+                            <option value="tencent">QQ音乐</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>类型</label>
+                        <select id="testItemType" required>
+                            <option value="playlist">歌单</option>
+                            <option value="song">单曲</option>
+                            <option value="artist">歌手</option>
+                            <option value="search">搜索</option>
+                            <option value="lrc">歌词</option>
+                            <option value="pic">封面</option>
+                            <option value="url">链接</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>资源ID</label>
+                        <input type="text" id="testItemValue" required placeholder="歌单ID / 歌曲ID / 关键词等">
+                    </div>
+                    <div class="form-group">
+                        <label class="checkbox-label"><input type="checkbox" id="testItemShow" checked> 在 /test 页面显示</label>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" onclick="closeModal('testItemModal')">取消</button>
+                <button type="submit" class="btn btn-primary" id="testItemSubmitBtn" onclick="document.getElementById('testItemForm').dispatchEvent(new Event('submit',{cancelable:true}))">保存</button>
             </div>
         </div>
     </div>
@@ -1270,6 +1463,28 @@ const getAdminHtml = () => `<!DOCTYPE html>
         </div>
     </div>
 
+    <div class="modal" id="domainModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="domainModalTitle">添加域名</h3>
+                <button class="modal-close" onclick="closeModal('domainModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="domainForm">
+                    <div class="form-group">
+                        <label>域名</label>
+                        <input type="text" id="domainInput" required placeholder="abloom.site 或 *.abloom.site">
+                        <small>支持精确域名（如 <code>abloom.site</code>）和通配符（如 <code>*.abloom.site</code>，匹配其所有子域及自身）</small>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" onclick="closeModal('domainModal')">取消</button>
+                <button type="submit" class="btn btn-primary" onclick="document.getElementById('domainForm').dispatchEvent(new Event('submit',{cancelable:true}))">添加</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         let authToken = localStorage.getItem('authToken');
         let authUsername = localStorage.getItem('authUsername');
@@ -1346,6 +1561,8 @@ const getAdminHtml = () => `<!DOCTYPE html>
             loadDashboard();
             loadConfig();
             load2FAStatus();
+            loadTestLibrary();
+            loadApiDefaults();
         };
 
         let currentUserRole = 'user';
@@ -1356,6 +1573,10 @@ const getAdminHtml = () => `<!DOCTYPE html>
                 currentUserRole = checkRes.data.role;
                 if (currentUserRole !== 'admin') {
                     document.getElementById('adminPathSection').style.display = 'none';
+                    const domainsLi = document.querySelector('[data-section="domains"]');
+                    if (domainsLi) domainsLi.style.display = 'none';
+                    const apiDefLi = document.querySelector('[data-section="apiDefaults"]');
+                    if (apiDefLi) apiDefLi.style.display = 'none';
                     return;
                 }
             }
@@ -1363,6 +1584,74 @@ const getAdminHtml = () => `<!DOCTYPE html>
             if (res?.success && res.data?.adminPath) {
                 document.getElementById('adminPathInput').value = res.data.adminPath;
             }
+            await loadDomainControl();
+        };
+
+        let domainList = [];
+
+        const loadDomainControl = async () => {
+            const domainRes = await api('/admin/config/domains');
+            if (!domainRes?.success) return;
+            const cfg = domainRes.data || {};
+            document.getElementById('domainControlEnabled').checked = !!cfg.enabled;
+            document.getElementById('allowMissingReferer').checked = cfg.allowMissingReferer !== false;
+            domainList = Array.isArray(cfg.allowedDomains) ? cfg.allowedDomains.slice() : [];
+            renderDomainList();
+            const pill = document.getElementById('domainStatusPill');
+            if (cfg.enabled) {
+                pill.className = 'badge badge-success';
+                pill.textContent = '已启用 · ' + domainList.length + ' 个域名';
+            } else {
+                pill.className = 'badge badge-warning';
+                pill.textContent = '未启用';
+            }
+        };
+
+        const renderDomainList = () => {
+            const tbody = document.getElementById('domainsList');
+            if (domainList.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="2" class="empty-state"><div class="empty-state-icon">🌐</div><div class="empty-state-text">暂无白名单域名</div></td></tr>';
+                return;
+            }
+            tbody.innerHTML = domainList.map((d, i) => {
+                const isWildcard = d.indexOf('*') !== -1;
+                const badge = isWildcard
+                    ? '<span class="badge badge-info">通配符</span> '
+                    : '<span class="badge badge-primary">精确</span> ';
+                return '<tr><td>' + badge + '<code style="font-size:13px;color:var(--text);">' + escapeHtml(d) + '</code></td>' +
+                    '<td class="actions"><button class="btn btn-danger btn-sm" onclick="deleteDomain(' + i + ')">删除</button></td></tr>';
+            }).join('');
+        };
+
+        const showAddDomainModal = () => {
+            document.getElementById('domainForm').reset();
+            document.getElementById('domainModalTitle').textContent = '添加域名';
+            document.getElementById('domainModal').classList.add('show');
+            setTimeout(() => document.getElementById('domainInput').focus(), 50);
+        };
+
+        const saveDomainList = async () => {
+            const enabled = document.getElementById('domainControlEnabled').checked;
+            const allowMissingReferer = document.getElementById('allowMissingReferer').checked;
+            const res = await api('/admin/config/domains', { method: 'PUT', body: JSON.stringify({ enabled, allowMissingReferer, allowedDomains: domainList }) });
+            if (res?.success) { showToast('已保存'); loadDomainControl(); }
+            else showToast(res?.error || '保存失败', 'error');
+        };
+
+        const deleteDomain = async (index) => {
+            const domain = domainList[index];
+            if (!confirm('确定删除域名 "' + domain + '" 吗？')) return;
+            domainList.splice(index, 1);
+            await saveDomainList();
+        };
+
+        const loadApiDefaults = async () => {
+            const res = await api('/admin/config/api-defaults');
+            if (!res?.success) return;
+            const d = res.data || {};
+            document.getElementById('apiDefaultServer').value = d.server || 'tencent';
+            document.getElementById('apiDefaultType').value = d.type || 'playlist';
+            document.getElementById('apiDefaultId').value = d.id || '';
         };
 
         const logout = async () => {
@@ -1377,7 +1666,7 @@ const getAdminHtml = () => `<!DOCTYPE html>
             document.querySelector('[data-section="' + section + '"]').classList.add('active');
             document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
             document.getElementById(section + 'Section').classList.add('active');
-            const titles = { dashboard: '仪表盘', cookies: 'Cookie管理', monitor: 'Cookie监测', tokens: 'API Token', users: '用户管理', logs: '操作日志', settings: '设置' };
+            const titles = { dashboard: '仪表盘', cookies: 'Cookie管理', monitor: 'Cookie监测', tokens: 'API Token', testlib: '测试曲库', domains: '域名白名单', apiDefaults: 'API默认值', users: '用户管理', logs: '操作日志', settings: '设置' };
             document.getElementById('pageTitle').textContent = titles[section];
             if (section === 'cookies') loadCookies();
             if (section === 'users') loadUsers();
@@ -1480,6 +1769,82 @@ const getAdminHtml = () => `<!DOCTYPE html>
             document.getElementById('tokenForm').reset();
             document.getElementById('tokenModal').classList.add('show');
         };
+
+        const TEST_TYPE_NAMES = { playlist: '歌单', song: '单曲', artist: '歌手', search: '搜索', lrc: '歌词', pic: '封面', url: '链接' };
+
+        const loadTestLibrary = async () => {
+            const res = await api('/admin/test-library');
+            if (!res?.success) return;
+            const tbody = document.getElementById('testlibList');
+            const items = res.data.items || [];
+            if (items.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" class="empty-state"><div class="empty-state-icon">🎼</div><div class="empty-state-text">暂无测试条目</div></td></tr>';
+            } else {
+                tbody.innerHTML = items.map(item => {
+                    const platformBadge = item.platform === 'netease'
+                        ? '<span class="badge badge-error">网易云</span>'
+                        : '<span class="badge badge-success">QQ音乐</span>';
+                    const showBadge = item.show
+                        ? '<span class="badge badge-success">显示</span>'
+                        : '<span class="badge badge-warning">隐藏</span>';
+                    return '<tr>' +
+                        '<td>' + escapeHtml(item.name) + '</td>' +
+                        '<td>' + platformBadge + '</td>' +
+                        '<td><span class="badge badge-info">' + (TEST_TYPE_NAMES[item.type] || item.type) + '</span></td>' +
+                        '<td><code style="font-size:12px;color:var(--text-muted);">' + escapeHtml(item.value) + '</code></td>' +
+                        '<td>' + showBadge + '</td>' +
+                        '<td class="actions">' +
+                            '<button class="btn btn-default btn-sm" onclick="toggleTestItemShow(\\'' + item.id + '\\',' + !item.show + ')">' + (item.show ? '隐藏' : '显示') + '</button>' +
+                            '<button class="btn btn-default btn-sm" onclick="editTestItem(\\'' + item.id + '\\')">编辑</button>' +
+                            '<button class="btn btn-danger btn-sm" onclick="deleteTestItem(\\'' + item.id + '\\')">删除</button>' +
+                        '</td></tr>';
+                }).join('');
+            }
+        };
+
+        const escapeHtml = (s) => String(s == null ? '' : s)
+            .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+
+        const openTestItemModal = () => {
+            document.getElementById('testItemForm').reset();
+            document.getElementById('testItemId').value = '';
+            document.getElementById('testItemShow').checked = true;
+            document.getElementById('testItemModalTitle').textContent = '添加测试条目';
+            document.getElementById('testItemModal').classList.add('show');
+        };
+
+        const editTestItem = async (id) => {
+            const res = await api('/admin/test-library');
+            if (!res?.success) return;
+            const item = (res.data.items || []).find(i => i.id === id);
+            if (!item) { showToast('条目不存在', 'error'); return; }
+            document.getElementById('testItemId').value = item.id;
+            document.getElementById('testItemName').value = item.name || '';
+            document.getElementById('testItemPlatform').value = item.platform;
+            document.getElementById('testItemType').value = item.type;
+            document.getElementById('testItemValue').value = item.value;
+            document.getElementById('testItemShow').checked = item.show !== false;
+            document.getElementById('testItemModalTitle').textContent = '编辑测试条目';
+            document.getElementById('testItemModal').classList.add('show');
+        };
+
+        const toggleTestItemShow = async (id, show) => {
+            const res = await api('/admin/test-library/' + id, {
+                method: 'PUT',
+                body: JSON.stringify({ show })
+            });
+            if (res?.success) { showToast(show ? '已设为显示' : '已隐藏'); loadTestLibrary(); }
+            else showToast(res?.error || '操作失败', 'error');
+        };
+
+        const deleteTestItem = async (id) => {
+            if (!confirm('确定删除此测试条目吗？')) return;
+            const res = await api('/admin/test-library/' + id, { method: 'DELETE' });
+            if (res?.success) { showToast('已删除'); loadTestLibrary(); }
+            else showToast(res?.error || '删除失败', 'error');
+        };
+
 
         const createToken = async () => {
             const name = document.getElementById('tokenName').value.trim();
@@ -1773,6 +2138,61 @@ const getAdminHtml = () => `<!DOCTYPE html>
             else showToast(res?.error || '保存失败', 'error');
         });
 
+        document.getElementById('domainControlForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const enabled = document.getElementById('domainControlEnabled').checked;
+            const allowMissingReferer = document.getElementById('allowMissingReferer').checked;
+            const res = await api('/admin/config/domains', { method: 'PUT', body: JSON.stringify({ enabled, allowMissingReferer, allowedDomains: domainList }) });
+            if (res?.success) { showToast('域名控制设置已保存'); loadDomainControl(); }
+            else showToast(res?.error || '保存失败', 'error');
+        });
+
+        document.getElementById('domainForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const value = document.getElementById('domainInput').value.trim();
+            if (!value) { showToast('请输入域名', 'error'); return; }
+            if (domainList.indexOf(value) !== -1) { showToast('该域名已存在', 'error'); return; }
+            domainList.push(value);
+            closeModal('domainModal');
+            await saveDomainList();
+        });
+
+        document.getElementById('apiDefaultsForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const payload = {
+                server: document.getElementById('apiDefaultServer').value,
+                type: document.getElementById('apiDefaultType').value,
+                id: document.getElementById('apiDefaultId').value.trim()
+            };
+            if (!payload.id) { showToast('请输入资源ID', 'error'); return; }
+            const res = await api('/admin/config/api-defaults', { method: 'PUT', body: JSON.stringify(payload) });
+            if (res?.success) showToast('API 默认值已保存');
+            else showToast(res?.error || '保存失败', 'error');
+        });
+
+        document.getElementById('testItemForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const id = document.getElementById('testItemId').value;
+            const payload = {
+                name: document.getElementById('testItemName').value.trim(),
+                platform: document.getElementById('testItemPlatform').value,
+                type: document.getElementById('testItemType').value,
+                value: document.getElementById('testItemValue').value.trim(),
+                show: document.getElementById('testItemShow').checked
+            };
+            if (!payload.value) { showToast('请输入资源ID', 'error'); return; }
+            const res = id
+                ? await api('/admin/test-library/' + id, { method: 'PUT', body: JSON.stringify(payload) })
+                : await api('/admin/test-library', { method: 'POST', body: JSON.stringify(payload) });
+            if (res?.success) {
+                showToast(id ? '已更新' : '已添加');
+                closeModal('testItemModal');
+                loadTestLibrary();
+            } else {
+                showToast(res?.error || '保存失败', 'error');
+            }
+        });
+
         document.getElementById('monitorForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const enabled = document.getElementById('monitorEnabled').checked;
@@ -1825,25 +2245,25 @@ const getAdminHtml = () => `<!DOCTYPE html>
             document.getElementById('twoFactorSetupNext').textContent = '下一步';
             document.getElementById('twoFactorSetupFinish').style.display = 'none';
             document.getElementById('twoFactorSecretDisplay').value = twoFASetupData.secret;
-            generateQRCode(twoFASetupData.otpAuthUrl);
+            generateQRCode(twoFASetupData.qrCode);
             document.getElementById('twoFactorSetupModal').classList.add('show');
         };
 
-        const generateQRCode = (text) => {
+        const generateQRCode = (dataUri) => {
             const container = document.getElementById('qrcodeContainer');
             container.innerHTML = '';
+            if (!dataUri) {
+                const fallback = document.createElement('div');
+                fallback.style.cssText = 'padding:16px;text-align:center;color:var(--text-secondary);font-size:13px;';
+                fallback.innerHTML = '二维码生成失败，请使用下方密钥手动输入';
+                container.appendChild(fallback);
+                return;
+            }
             const img = document.createElement('img');
-            img.src = 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=' + encodeURIComponent(text);
+            img.src = dataUri;
             img.alt = '2FA QR Code';
             img.style.width = '200px';
             img.style.height = '200px';
-            img.onerror = () => {
-                img.remove();
-                const fallback = document.createElement('div');
-                fallback.style.cssText = 'padding:16px;text-align:center;color:var(--text-secondary);font-size:13px;';
-                fallback.innerHTML = '二维码加载失败，请使用下方密钥手动输入';
-                container.appendChild(fallback);
-            };
             container.appendChild(img);
         };
 

@@ -247,9 +247,81 @@ export const adminRoutes = (app) => {
         const body = await c.req.json()
         const { adminPath } = body
         const operator = c.get('username')
-        
+
         const result = await store.setAdminPath(adminPath, operator)
-        
+
+        if (result.success) {
+            return c.json(result)
+        } else {
+            return c.json(result, 400)
+        }
+    })
+
+    app.get('/admin/config/domains', authMiddleware, adminMiddleware, async (c) => {
+        const config = store.getDomainControlConfig()
+        return c.json({ success: true, data: config })
+    })
+
+    app.put('/admin/config/domains', authMiddleware, adminMiddleware, async (c) => {
+        const body = await c.req.json()
+        const operator = c.get('username')
+
+        const result = await store.setDomainControlConfig(body, operator)
+
+        if (result.success) {
+            return c.json(result)
+        } else {
+            return c.json(result, 400)
+        }
+    })
+
+    app.get('/admin/config/api-defaults', authMiddleware, adminMiddleware, async (c) => {
+        return c.json({ success: true, data: store.getApiDefaults() })
+    })
+
+    app.put('/admin/config/api-defaults', authMiddleware, adminMiddleware, async (c) => {
+        const body = await c.req.json()
+        const operator = c.get('username')
+        const result = await store.setApiDefaults(body, operator)
+        if (result.success) {
+            return c.json(result)
+        } else {
+            return c.json(result, 400)
+        }
+    })
+
+    app.get('/admin/test-library', authMiddleware, adminMiddleware, async (c) => {
+        const data = store.getTestLibrary()
+        return c.json({ success: true, data })
+    })
+
+    app.post('/admin/test-library', authMiddleware, adminMiddleware, async (c) => {
+        const body = await c.req.json()
+        const operator = c.get('username')
+        const result = await store.addTestItem(body, operator)
+        if (result.success) {
+            return c.json(result)
+        } else {
+            return c.json(result, 400)
+        }
+    })
+
+    app.put('/admin/test-library/:id', authMiddleware, adminMiddleware, async (c) => {
+        const id = c.req.param('id')
+        const body = await c.req.json()
+        const operator = c.get('username')
+        const result = await store.updateTestItem(id, body, operator)
+        if (result.success) {
+            return c.json(result)
+        } else {
+            return c.json(result, 400)
+        }
+    })
+
+    app.delete('/admin/test-library/:id', authMiddleware, adminMiddleware, async (c) => {
+        const id = c.req.param('id')
+        const operator = c.get('username')
+        const result = await store.deleteTestItem(id, operator)
         if (result.success) {
             return c.json(result)
         } else {
@@ -336,7 +408,7 @@ export const adminRoutes = (app) => {
 
     app.post('/admin/2fa/setup', authMiddleware, async (c) => {
         const username = c.get('username')
-        const result = store.setup2FA(username)
+        const result = await store.setup2FA(username)
         if (result.success) {
             return c.json(result)
         } else {
