@@ -44,9 +44,12 @@ const get_playlist = async (id, cookie = '') => {
         jsonp = await get_song_url(ids.join(','), cookie)
     }
     const res = await Promise.all(result.map(async song => {
+        const authorName = song.singer.reduce((i, v) => ((i ? i + " / " : i) + v.name), '')
         let song_info = {
-            author: song.singer.reduce((i, v) => ((i ? i + " / " : i) + v.name), ''),
+            name: song.songname,
+            artist: authorName,
             title: song.songname,
+            author: authorName,
             pic: `https://y.gtimg.cn/music/photo_new/T002R300x300M000${song.albummid}.jpg`,
             url: config.OVERSEAS ? '' : song.songmid,
             lrc: song.songmid,

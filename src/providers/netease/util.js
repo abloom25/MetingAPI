@@ -192,9 +192,12 @@ export const request = async (method, url, data = {}, options) => {
 export const map_song_list = (song_list) => {
     return song_list.songs.map(song => {
         const artists = song.ar || song.artists
+        const authorName = artists.reduce((i, v) => ((i ? i + " / " : i) + v.name), '')
         return {
+            name: song.name,
+            artist: authorName,
             title: song.name,
-            author: artists.reduce((i, v) => ((i ? i + " / " : i) + v.name), ''),
+            author: authorName,
             pic: song?.al?.picUrl || song.id,
             url: song.id,
             lrc: song.id

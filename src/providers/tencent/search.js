@@ -32,8 +32,10 @@ const get_search_songs = async (id, cookie = '') => {
     }
 
     const res = list.map(song => ({
-        author: song.singer.reduce((i, v) => ((i ? i + " / " : i) + v.name), ''),
+        name: song.songname,
+        artist: song.singer.reduce((i, v) => ((i ? i + " / " : i) + v.name), ''),
         title: song.songname,
+        author: song.singer.reduce((i, v) => ((i ? i + " / " : i) + v.name), ''),
         pic: `https://y.gtimg.cn/music/photo_new/T002R300x300M000${song.albummid}.jpg`,
         url: config.OVERSEAS ? '' : song.songmid,
         lrc: song.songmid,

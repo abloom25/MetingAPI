@@ -183,36 +183,34 @@ const buildHtml = () => {
     const { items } = store.getTestLibrary()
     const visible = items.filter((i) => i.show !== false)
 
-    // 按 platform 分组的可播放来源
-    const grouped = {}
-    const order = []
-    for (const it of visible) {
-        if (!PLAYABLE_TYPES.includes(it.type)) continue
-        if (!grouped[it.platform]) { grouped[it.platform] = []; order.push(it.platform) }
-        grouped[it.platform].push(it)
-    }
+    // 每个可播放来源作为独立分组，标明平台+类型+名称
+    const playableSources = visible.filter(it => PLAYABLE_TYPES.includes(it.type))
 
     // 序列化来源给前端 JS
-    const sources = JSON.stringify(order.flatMap((platform) =>
-        grouped[platform].map((it) => ({
-            platform,
-            type: it.type,
-            value: it.value,
-            label: it.name || typeNames[it.type] || it.type
-        }))
-    ))
+    const sources = JSON.stringify(playableSources.map((it, idx) => ({
+        platform: it.platform,
+        type: it.type,
+        value: it.value,
+        label: it.name || typeNames[it.type] || it.type,
+        containerId: 'src-' + idx
+    })))
 
     let sourcesHtml = ''
-    if (order.length === 0) {
+    if (playableSources.length === 0) {
         sourcesHtml = `        <div class="empty">暂无可播放项，请在管理后台「测试曲库」中添加歌单/单曲/歌手/搜索类条目。</div>\n`
     }
-    for (const platform of order) {
+    for (let idx = 0; idx < playableSources.length; idx++) {
+        const it = playableSources[idx]
+        const platform = it.platform
+        const typeLabel = typeNames[it.type] || it.type
+        const srcLabel = it.name || typeLabel
         sourcesHtml += `        <div class="group">
             <div class="group-header">
                 <span class="group-icon" style="background:${platform === 'netease' ? '#ff6363' : '#81d8d0'}">${platform === 'netease' ? '🎶' : '🎵'}</span>
-                <span class="group-name">${platformNames[platform] || platform}</span>
+                <span class="group-name">${srcLabel}</span>
+                <span class="tag" style="margin-left:8px">${platformNames[platform] || platform} · ${typeLabel}</span>
             </div>
-            <div class="list" id="list-${platform}"><div class="loading-row"><span class="spin"></span>加载中…</div></div>
+            <div class="list" id="list-src-${idx}"><div class="loading-row"><span class="spin"></span>加载中…</div></div>
         </div>
 `
     }
@@ -274,7 +272,7 @@ ${sourcesHtml}    </div>
         // 拉取每个来源的曲目列表
         async function loadSources(){
             await Promise.all(SOURCES.map(async (src)=>{
-                const container = document.getElementById('list-'+src.platform);
+                const container = document.getElementById('list-'+src.containerId);
                 if(!container) return;
                 try{
                     const res = await fetch('api?server='+encodeURIComponent(src.platform)+'&type='+encodeURIComponent(src.type)+'&id='+encodeURIComponent(src.value));
@@ -284,30 +282,29 @@ ${sourcesHtml}    </div>
                     if(tracks.length===0){ container.innerHTML = '<div class="loading-row">暂无曲目</div>'; return; }
                     const startIdx = queue.length;
                     tracks.forEach(t => queue.push({
-                        name: t.name || '未知曲目',
-                        artist: t.artist || '',
+                        name: t.name || t.title || '未知曲目',
+                        artist: t.artist || t.author || '',
                         url: t.url || '',
                         pic: t.pic || '',
                         lrc: t.lrc || '',
                         srcLabel: src.label,
                         srcPlatform: src.platform
                     }));
-                    renderList(src.platform, tracks, startIdx);
+                    renderList(src.containerId, tracks, startIdx);
                 }catch(e){
                     container.innerHTML = '<div class="loading-row">加载失败</div>';
                 }
             }));
         }
 
-        function renderList(platform, tracks, startIdx){
-            const container = document.getElementById('list-'+platform);
+        function renderList(containerId, tracks, startIdx){
+            const container = document.getElementById('list-'+containerId);
             container.innerHTML = tracks.map((t,i)=>{
                 const idx = startIdx + i;
                 return '<div class="track" data-idx="'+idx+'">'+
                     '<span class="track-num">'+(i+1)+'</span>'+
-                    '<div class="track-info"><div class="track-name">'+esc(t.name||'未知曲目')+'</div>'+
+                    '<div class="track-info"><div class="track-name">'+esc(t.title || t.name || '未知曲目')+'</div>'+
                     (t.artist ? '<div class="track-artist">'+esc(t.artist)+'</div>' : '') +'</div>'+
-                    '<span class="track-src">'+esc(platform)+'</span>'+
                 '</div>';
             }).join('');
             container.querySelectorAll('.track').forEach(el=>{
@@ -329,7 +326,7 @@ ${sourcesHtml}    </div>
             const t = queue[current];
             if(!t){ return; }
             document.getElementById('pTitle').textContent = t.name;
-            document.getElementById('pArtist').textContent = (t.artist ? t.artist + ' · ' : '') + t.srcLabel;
+            document.getElementById('pArtist').textContent = (t.artist ? t.artist + ' · ' : '') + t.srcLabel + ' (' + t.srcPlatform + ')';
             const art = document.getElementById('pArt');
             if(t.pic){ art.style.backgroundImage = 'url("'+t.pic+'")'; } else { art.style.backgroundImage = ''; }
             document.getElementById('btnPlay').textContent = '▶';
