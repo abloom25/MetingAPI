@@ -36,7 +36,14 @@ class NodeResponse extends Response {
 const getRequestListener = (fetchCallback) => {
     return async (incoming, outgoing) => {
         const method = incoming.method || 'GET'
-        const url = `http://${incoming.headers.host}${incoming.url}`
+        const forwardedProto = String(
+            incoming.headers['x-forwarded-proto'] ||
+            incoming.headers['x-forwarded-protocol'] ||
+            incoming.headers['x-url-scheme'] ||
+            'http'
+        ).split(',')[0].trim()
+        const protocol = forwardedProto || 'http'
+        const url = `${protocol}://${incoming.headers.host}${incoming.url}`
 
         const headerRecord = {}
         const len = incoming.rawHeaders.length

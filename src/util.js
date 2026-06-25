@@ -53,6 +53,57 @@ export const getPathFromURL = (url, strict = true) => {
   return result;
 };
 
+const getFirstHeaderValue = (value) => {
+  if (!value) return ''
+  return value.split(',')[0].trim()
+}
+
+const isPrivateIpv4 = (hostname) => {
+  const match = hostname.match(/^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/)
+  if (!match) return false
+
+  const parts = match.slice(1).map(Number)
+  if (parts.some(part => part < 0 || part > 255)) return false
+
+  const [a, b] = parts
+  return (
+    a === 10 ||
+    a === 127 ||
+    (a === 172 && b >= 16 && b <= 31) ||
+    (a === 192 && b === 168) ||
+    (a === 169 && b === 254) ||
+    (a === 0 && b === 0)
+  )
+}
+
+const isLocalOrPrivateHost = (hostname) => {
+  const host = hostname.replace(/^\[|\]$/g, '').toLowerCase()
+  return (
+    host === 'localhost' ||
+    host === '::1' ||
+    host.endsWith('.localhost') ||
+    isPrivateIpv4(host)
+  )
+}
+
+export const upgradeHttpToHttps = (value) => {
+  if (typeof value !== 'string' || !value.startsWith('http://')) {
+    return value
+  }
+
+  try {
+    const url = new URL(value)
+    if (url.protocol !== 'http:' || isLocalOrPrivateHost(url.hostname)) {
+      return value
+    }
+
+    url.protocol = 'https:'
+    return url.toString()
+  } catch {
+    return value.replace(/^http:\/\//, 'https://')
+  }
+}
+
 export const get_runtime = () => {
 
   if (globalThis?.process?.env?.RUNTIME) {
@@ -92,9 +143,34 @@ export const get_runtime = () => {
 
 export const get_url = (ctx) => {
   const runtime = get_runtime()
-  const perfix = ctx.req.header('X-Forwarded-Host') || ctx.req.header('X-Forwarded-Url')
-  let req_url = perfix ? perfix + getPathFromURL(ctx.req.url.split('?')[0]) : ctx.req.url.split('?')[0]
-  if (!req_url.startsWith('http')) req_url = 'http://' + req_url
-  if (runtime === 'vercel') req_url = req_url.replace('http://', 'https://')
-  return req_url
+  const forwardedUrl = getFirstHeaderValue(ctx.req.header('X-Forwarded-Url'))
+  const currentUrl = new URL(ctx.req.url)
+
+  if (forwardedUrl) {
+    const reqUrl = forwardedUrl.startsWith('http')
+      ? new URL(forwardedUrl)
+      : new URL(`http://${forwardedUrl}`)
+
+    reqUrl.pathname = currentUrl.pathname
+    reqUrl.search = ''
+    reqUrl.hash = ''
+    return upgradeHttpToHttps(reqUrl.toString())
+  }
+
+  const host = getFirstHeaderValue(ctx.req.header('X-Forwarded-Host')) || currentUrl.host
+  const forwardedProto = getFirstHeaderValue(
+    ctx.req.header('X-Forwarded-Proto') ||
+    ctx.req.header('X-Forwarded-Protocol') ||
+    ctx.req.header('X-Url-Scheme')
+  )
+  const protocol = forwardedProto || currentUrl.protocol.replace(':', '') || 'http'
+  const reqUrl = new URL(`${protocol}://${host}`)
+
+  reqUrl.pathname = currentUrl.pathname
+
+  if (runtime === 'vercel' || runtime === 'cloudflare' || runtime === 'fastly') {
+    return upgradeHttpToHttps(reqUrl.toString())
+  }
+
+  return upgradeHttpToHttps(reqUrl.toString())
 }

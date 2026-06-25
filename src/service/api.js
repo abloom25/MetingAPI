@@ -1,5 +1,5 @@
 import Providers from "../providers/index.js"
-import { format as lyricFormat, get_url } from "../util.js"
+import { format as lyricFormat, get_url, upgradeHttpToHttps } from "../util.js"
 import store from "../admin/store.js"
 
 const parseCookieString = (cookieString) => {
@@ -38,7 +38,7 @@ export default async (ctx) => {
     let data = await p.get(server).handle(type, id, cookie)
 
     if (type === 'url') {
-        let url = data
+        let url = upgradeHttpToHttps(data)
 
         if (!url) {
             ctx.status(403)
@@ -51,7 +51,7 @@ export default async (ctx) => {
     }
 
     if (type === 'pic') {
-        return ctx.redirect(data)
+        return ctx.redirect(upgradeHttpToHttps(data))
     }
 
     if (type === 'lrc') {
@@ -64,6 +64,8 @@ export default async (ctx) => {
             const _ = String(x[i])
             if (!_.startsWith('@') && !_.startsWith('http') && _.length > 0) {
                 x[i] = `${get_url(ctx)}?server=${server}&type=${i}&id=${_}`
+            } else {
+                x[i] = upgradeHttpToHttps(x[i])
             }
         }
         return x
