@@ -45,3 +45,20 @@ test('test api', async () => {
 
     }
 }, 10 * 60 * 1000)
+
+test('test api limit', async () => {
+    const limit = 2
+    const urls = [
+        `http://localhost:3000/api?server=netease&type=playlist&id=${examples.netease.playlist.value}&limit=${limit}`,
+        `http://localhost:3000/api?server=tencent&type=playlist&id=${examples.tencent.playlist.value}&limit=${limit}`,
+        `http://localhost:3000/api?server=netease&type=search&id=KN33S0XXX&limit=${limit}`,
+        `http://localhost:3000/api?server=tencent&type=search&id=KN33S0XXX&limit=${limit}`,
+    ]
+
+    for (const url of urls) {
+        const res = await app.request(url)
+        expect(res.status).toBe(200)
+        const data = await res.json()
+        expect(data.length).toBeLessThanOrEqual(limit)
+    }
+}, 10 * 60 * 1000)

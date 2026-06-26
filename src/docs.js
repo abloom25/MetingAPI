@@ -291,6 +291,13 @@ const buildHtml = (c) => {
                             <td><span class="pdef">7326220405</span></td>
                             <td>资源ID：歌单ID、歌曲ID、歌手ID、搜索关键词等</td>
                         </tr>
+                        <tr>
+                            <td><span class="pname">limit</span></td>
+                            <td><span class="ptype">number</span></td>
+                            <td><span class="popt">否</span></td>
+                            <td><span class="pdef">-</span></td>
+                            <td>限制返回数量；搜索未传时默认 30 条，歌单等列表未传时不限制</td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
@@ -321,7 +328,7 @@ const buildHtml = (c) => {
             <div class="code-label">请求 URL <span class="tag">URL</span></div>
             <div class="code-block">
                 <button class="copy-btn" onclick="copyCode(this)">复制</button>
-                <pre>${baseUrl}api?server=netease&type=playlist&id=6907557348</pre>
+                <pre>${baseUrl}api?server=netease&type=playlist&id=6907557348&limit=10</pre>
             </div>
         </div>
     </div>

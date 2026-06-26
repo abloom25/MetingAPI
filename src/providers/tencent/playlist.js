@@ -14,7 +14,7 @@ const parseCookieString = (cookieString) => {
     return cookies
 }
 
-const get_playlist = async (id, cookie = '') => {
+const get_playlist = async (id, cookie = '', { limit } = {}) => {
     const cookieObj = parseCookieString(cookie)
     const uin = cookieObj.uin || '0'
     
@@ -37,6 +37,7 @@ const get_playlist = async (id, cookie = '') => {
 
     result = await result.json()
     result = result.cdlist[0].songlist
+    if (limit !== undefined) result = result.slice(0, limit)
 
     let jsonp
     if (config.OVERSEAS) {
@@ -58,7 +59,7 @@ const get_playlist = async (id, cookie = '') => {
         return song_info
     }));
 
-    if (config.OVERSEAS) res[0].url = jsonp
+    if (config.OVERSEAS && res.length) res[0].url = jsonp
     return res;
 }
 

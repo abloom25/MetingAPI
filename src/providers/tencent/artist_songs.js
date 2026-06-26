@@ -3,7 +3,7 @@ import { get_song_url } from "./song.js"
 import { changeUrlQuery } from "./util.js"
 
 // 获取歌手热门歌曲，id 为 singermid
-const get_artist_songs = async (id, cookie = '') => {
+const get_artist_songs = async (id, cookie = '', { limit = 30 } = {}) => {
     const data = {
         data: JSON.stringify({
             comm: { ct: 24, cv: 0 },
@@ -13,7 +13,7 @@ const get_artist_songs = async (id, cookie = '') => {
                     sort: 5,
                     singermid: id,
                     sin: 0,
-                    num: 30,
+                    num: limit,
                 },
                 module: 'music.web_singer_info_svr',
             },

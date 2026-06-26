@@ -14,6 +14,13 @@ const parseCookieString = (cookieString) => {
     return cookies
 }
 
+const parseLimit = (value) => {
+    if (value === undefined) return undefined
+
+    const limit = parseInt(value)
+    return Number.isNaN(limit) || limit < 0 ? undefined : limit
+}
+
 export default async (ctx) => {
 
     const p = new Providers()
@@ -23,6 +30,7 @@ export default async (ctx) => {
     const server = query.server || defaults.server
     const type = query.type || defaults.type
     const id = query.id || defaults.id
+    const limit = parseLimit(query.limit)
 
     if (!p.get_provider_list().includes(server) || !p.get(server).support_type.includes(type)) {
         ctx.status(400)
@@ -35,7 +43,7 @@ export default async (ctx) => {
         cookie = storedCookie.cookie
     }
 
-    let data = await p.get(server).handle(type, id, cookie)
+    let data = await p.get(server).handle(type, id, cookie, { limit })
 
     if (type === 'url') {
         let url = upgradeHttpToHttps(data)
