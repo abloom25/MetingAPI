@@ -1,14 +1,13 @@
 import { request } from './util.js'
 import { map_song_list } from "./util.js"
 
-export const get_playlist = async (id, cookie = '') => {
+export const get_playlist = async (id, cookie = '', { limit } = {}) => {
     const data = {
         id,
         n: 100000,
         s: 8,
     }
-    let limit = 200 || Infinity
-    let offset = 0 || 0
+    let offset = 0
 
     let res = await request('POST', `https://music.163.com/api/v6/playlist/detail`, data, { crypto: 'api', cookie: cookie || {} })
 
@@ -18,7 +17,7 @@ export const get_playlist = async (id, cookie = '') => {
         c:
             '[' +
             trackIds
-                .slice(offset, offset + limit)
+                .slice(offset, limit === undefined ? undefined : offset + limit)
                 .map((item) => '{"id":' + item.id + '}')
                 .join(',') +
             ']',

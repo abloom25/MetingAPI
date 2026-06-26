@@ -134,6 +134,7 @@ GET /api?server=netease&type=playlist&id=7326220405
 GET /api?server=tencent&type=song&id=004Yi5BD3ksoAN
 GET /api?server=netease&type=url&id=22704470
 GET /api?server=tencent&type=lrc&id=004Yi5BD3ksoAN
+GET /api?server=netease&type=search&id=周杰伦&limit=10
 ```
 
 ### 响应格式
@@ -141,6 +142,7 @@ GET /api?server=tencent&type=lrc&id=004Yi5BD3ksoAN
 - `type=url`：以 `@` 开头返回纯文本，否则 302 重定向到音频 URL
 - `type=pic`：302 重定向到图片 URL
 - `type=lrc`：返回纯文本歌词（含翻译合并）
+- `limit`：限制返回数量。`type=search` 未传时默认返回 30 条；歌单等列表类型未传时不限制，传入后按数量截取
 - 其他类型：返回 JSON 数组
 
 ## 管理后台

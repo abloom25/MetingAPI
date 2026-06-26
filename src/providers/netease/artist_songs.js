@@ -1,7 +1,7 @@
 import { request } from "./util.js"
 import { map_song_list } from "./util.js"
 
-export const get_artist_songs = async (id, cookie = '') => {
+export const get_artist_songs = async (id, cookie = '', { limit } = {}) => {
     id = parseInt(id)
     const data = {
         id,
@@ -12,6 +12,7 @@ export const get_artist_songs = async (id, cookie = '') => {
         cookie: cookie || {},
     })
 
-    return map_song_list(res)
+    const songs = map_song_list(res)
+    return limit === undefined ? songs : songs.slice(0, limit)
 
 }

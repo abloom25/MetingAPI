@@ -1,12 +1,12 @@
 import { request } from "./util.js"
 import { map_song_list } from "./util.js"
 
-export const get_search_songs = async (id, cookie = '') => {
+export const get_search_songs = async (id, cookie = '', { limit = 30 } = {}) => {
 
     const data = {
         s: id,
         type: 1,
-        limit: 30,
+        limit,
         offset: 0,
         total: true,
     }

@@ -3,10 +3,10 @@ import { get_song_url } from "./song.js"
 import { changeUrlQuery } from "./util.js"
 
 // 搜索歌曲，id 为关键词
-const get_search_songs = async (id, cookie = '') => {
+const get_search_songs = async (id, cookie = '', { limit = 30 } = {}) => {
     const data = {
         format: 'json',
-        n: 30,
+        n: limit,
         p: 1,
         w: id,
         cr: 1,

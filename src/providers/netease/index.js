@@ -6,7 +6,7 @@ import { get_search_songs } from "./search.js"
 
 const support_type = ['url', 'lrc', 'song', 'playlist', 'artist', 'search', 'pic']
 
-const handle = async (type, id, cookie = '') => {
+const handle = async (type, id, cookie = '', options = {}) => {
     let result;
     switch (type) {
         case 'lrc':
@@ -22,13 +22,13 @@ const handle = async (type, id, cookie = '') => {
             result = await get_song_info(id, cookie)
             break
         case 'playlist':
-            result = await get_playlist(id, cookie)
+            result = await get_playlist(id, cookie, options)
             break
         case 'artist':
-            result = await get_artist_songs(id, cookie)
+            result = await get_artist_songs(id, cookie, options)
             break
         case 'search':
-            result = await get_search_songs(id, cookie)
+            result = await get_search_songs(id, cookie, options)
             break
         default:
             return -1;
